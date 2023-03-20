@@ -19,7 +19,7 @@ const xssCleaner = require('xss-clean');
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
-app.use(express.static(path.resolve()));
+app.use(express.static(path.resolve(__dirname, './client/build')));
 app.use(express.json());
 app.use(helmet());
 app.use(xssCleaner());
@@ -29,7 +29,7 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/jobs', authUser, jobsRouter);
 
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+  res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
 });
 
 app.use(notFoundMiddleware);
