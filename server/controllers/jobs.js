@@ -4,14 +4,14 @@ const { StatusCodes } = require('http-status-codes')
 
 // route('jobs')
 const getAllJobs = async (req, res) => {
-    const jobs = await Job.find({ createdBy: req.user.id }, 'company position status');
-    res.status(StatusCodes.OK).json(jobs)
+    const jobs = await Job.find({ createdBy: req.user.id });
+    res.status(StatusCodes.OK).json({ jobs })
 }
 
 const createJob = async (req, res) => {
     req.body.createdBy = req.user.id;
-    const newPost = await Job.create(req.body);
-    res.status(StatusCodes.CREATED).json(newPost);
+    const newJob = await Job.create(req.body);
+    res.status(StatusCodes.CREATED).json(newJob);
 }
 
 
@@ -30,13 +30,13 @@ const updateJob = async (req, res) => {
     const {
         user: { id: userId },
         params: { id: jobId },
-        body: { company, position }
+        body: { company, position, jobLocation, status, jobType }
     } = req
 
-    if ((!company || company.trim().length < 1) || (!position || position.trim().length < 1)) {
+    if ((!company || company.trim().length < 1) || (!position || position.trim().length < 1) || (!jobLocation || jobLocation.trim().length < 1)) {
         throw new BadRequestError('Please provide valid values');
     }
-    const job = await Job.findOneAndUpdate({ _id: jobId, createdBy: userId }, { company, position }, { new: true, runValidators: true });
+    const job = await Job.findOneAndUpdate({ _id: jobId, createdBy: userId }, { company, position, jobLocation, status, jobType }, { new: true, runValidators: true });
     if (!job) {
         throw new NotFoundError(`Found no job with id ${jobId}`);
     }
@@ -52,7 +52,7 @@ const deleteJob = async (req, res) => {
     if (!job) {
         throw new NotFoundError(`Found no job with id ${jobId}`);
     }
-    res.status(StatusCodes.OK).json({msg: `job ID ${jobId} has been deleted successfully`});
+    res.status(StatusCodes.OK).json({ msg: `job ID ${jobId} has been deleted successfully` });
 }
 
 module.exports = {

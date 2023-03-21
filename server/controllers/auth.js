@@ -55,7 +55,7 @@ const updateUser = async (req, res) => {
         name: user.name,
         email: user.email,
         lastName: user.lastName,
-        Location: user.location,
+        location: user.location,
         token
     }
     res.status(StatusCodes.OK).json({ user: updatedInfo });
