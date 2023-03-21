@@ -4,9 +4,9 @@ const { StatusCodes } = require('http-status-codes')
 
 // route('jobs')
 const getAllJobs = async (req, res) => {
-    const { search, status, jobType, sort } = req.query;
+    const { search, status, jobType, sort, page: queryPage, limit: queryLimit } = req.query;
     const queryObj = { createdBy: req.user.id };
-    
+
     // Filter by seaching
     if (search) {
         queryObj.position = { $regex: search, $options: 'i' }
@@ -20,7 +20,7 @@ const getAllJobs = async (req, res) => {
         queryObj.jobType = jobType;
     }
 
-    // filter by sorting
+    // sorting
     let sorting = '-createdAt'
     if (sort === 'oldest') {
         sorting = 'createdAt';
@@ -32,8 +32,16 @@ const getAllJobs = async (req, res) => {
         sorting = '-position';
     }
 
-    const jobs = await Job.find(queryObj).sort(sorting);
-    res.status(StatusCodes.OK).json({ jobs })
+    // pagination
+    const page = Number(queryPage) || 1;
+    const limit = Number(queryLimit) || 10;
+    const skip = (page - 1) * limit
+
+    const totalJobs = await Job.countDocuments(queryObj);
+    const numOfPages = Math.ceil(totalJobs / limit)
+    
+    const jobs = await Job.find(queryObj).sort(sorting).skip(skip).limit(limit);
+    res.status(StatusCodes.OK).json({ jobs, totalJobs, numOfPages })
 }
 
 const createJob = async (req, res) => {
