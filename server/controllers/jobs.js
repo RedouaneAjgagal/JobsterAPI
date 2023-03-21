@@ -4,7 +4,13 @@ const { StatusCodes } = require('http-status-codes')
 
 // route('jobs')
 const getAllJobs = async (req, res) => {
-    const jobs = await Job.find({ createdBy: req.user.id });
+    const { search } = req.query;
+    const queryObj = { createdBy: req.user.id };
+    if (search) {
+        queryObj.position = { $regex: search, $options: 'i' }
+    }
+    console.log(queryObj);
+    const jobs = await Job.find(queryObj).sort('-createdAt');
     res.status(StatusCodes.OK).json({ jobs })
 }
 
