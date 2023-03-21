@@ -4,10 +4,19 @@ const { StatusCodes } = require('http-status-codes')
 
 // route('jobs')
 const getAllJobs = async (req, res) => {
-    const { search } = req.query;
+    const { search, status, jobType } = req.query;
     const queryObj = { createdBy: req.user.id };
+    // Filter by seaching
     if (search) {
         queryObj.position = { $regex: search, $options: 'i' }
+    }
+    // Filter by status
+    if (status && status !== 'all') {
+        queryObj.status = status;
+    }
+    // Filter by job type
+    if (jobType && jobType !== 'all') {
+        queryObj.jobType = jobType;
     }
     console.log(queryObj);
     const jobs = await Job.find(queryObj).sort('-createdAt');
