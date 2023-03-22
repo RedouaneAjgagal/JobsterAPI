@@ -137,7 +137,7 @@ const showStats = async (req, res) => {
         const date = new Date(year, month - 1).toLocaleTimeString('en-us', { year: 'numeric', month: 'short' }).split(',')[0];
 
         return { date, count }
-    })
+    }).reverse()
 
     res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
 }
