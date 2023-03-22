@@ -134,11 +134,11 @@ const showStats = async (req, res) => {
 
     const monthlyApplications = getMonthlyApplications.map(item => {
         const { _id: { year, month }, count } = item;
-        const date = new Date(year, month).toLocaleTimeString('en-us', { year: 'numeric', month: 'short' }).split(',')[0];
+        const date = new Date(year, month - 1).toLocaleTimeString('en-us', { year: 'numeric', month: 'short' }).split(',')[0];
 
         return { date, count }
     })
-    
+
     res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
 }
 
