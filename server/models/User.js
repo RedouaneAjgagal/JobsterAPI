@@ -21,13 +21,13 @@ const userSchema = new mongoose.Schema({
         minLength: [6, 'Password must be more than 6 characters!']
     },
     lastName: {
-        type:String,
+        type: String,
         maxLength: 20,
         trim: true,
         default: 'Last Name'
     },
     location: {
-        type:String,
+        type: String,
         maxLength: 20,
         trim: true,
         default: 'My City'
@@ -41,7 +41,7 @@ userSchema.pre('save', async function () {
 });
 
 userSchema.methods.createToken = function () {
-    return jwt.sign({ userID: this._id, username: this.name }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_LIFETIME })
+    return jwt.sign({ userId: this._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_LIFETIME })
 }
 
 userSchema.methods.comparePassword = async function (candidatePassword) {

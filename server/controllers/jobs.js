@@ -6,7 +6,6 @@ const { StatusCodes } = require('http-status-codes')
 const getAllJobs = async (req, res) => {
     const { search, status, jobType, sort, page: queryPage, limit: queryLimit } = req.query;
     const queryObj = { createdBy: req.user.id };
-
     // Filter by seaching
     if (search) {
         queryObj.position = { $regex: search, $options: 'i' }
